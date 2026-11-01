@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0c3b43">
+<title>CampusCare | Campus Maintenance Portal</title>
+<style>
+:root{
+ --ink:#12343b;--muted:#637b80;--teal:#087f78;--teal2:#10a99a;--mint:#e9f7f3;
+ --paper:#f5faf8;--white:#fff;--line:#dcebe6;--orange:#f3a43b;--blue:#438bd5;
+ --shadow:0 18px 50px rgba(14,65,66,.09);--radius:22px
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:92px}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+button,input,select,textarea{font:inherit}
+button,a{ -webkit-tap-highlight-color:transparent}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer}
+.topbar{height:76px;background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);display:flex;align-items:center;position:sticky;top:0;z-index:20}
+.nav-wrap{width:min(1240px,92%);margin:auto;display:flex;align-items:center;justify-content:space-between;gap:22px}
+.brand{display:flex;align-items:center;gap:11px;font-size:23px;font-weight:850;letter-spacing:-.8px}
+.brand-mark{height:42px;width:42px;border-radius:14px;display:grid;place-items:center;color:white;background:linear-gradient(135deg,#075b62,#12ad94);font-size:22px;box-shadow:0 8px 18px #0a8b7b35}
+.navlinks{display:flex;align-items:center;gap:16px;color:#557075;font-size:14px;font-weight:650}
+.navlinks a:hover{color:var(--teal)}
+.nav-actions{display:flex;align-items:center;gap:10px}
+.btn{border:0;border-radius:12px;padding:12px 18px;font-weight:750;transition:.2s;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn:hover{transform:translateY(-2px);filter:brightness(1.03)}
+.btn-primary{background:linear-gradient(135deg,var(--teal),var(--teal2));color:white;box-shadow:0 9px 20px #0a8b7b2b}
+.btn-outline{background:white;border:1px solid var(--line);color:var(--ink)}
+.btn-dark{background:#123c43;color:#fff}
+.btn-sm{padding:9px 14px;font-size:13px;border-radius:10px}
+.menu-btn{display:none;background:white;border:1px solid var(--line);border-radius:10px;padding:9px 12px;color:var(--ink)}
+.wrap{width:min(1240px,92%);margin:auto}
+.hero{padding:34px 0 28px}
+.hero-panel{min-height:410px;border-radius:28px;overflow:hidden;position:relative;background:#0b4448;box-shadow:var(--shadow);display:flex;align-items:center}
+.hero-panel:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(6,51,57,.98) 0%,rgba(6,62,64,.92) 34%,rgba(6,62,64,.38) 66%,rgba(6,62,64,.05) 100%),url("assets/campus-hero.jpg") center/cover no-repeat}
+.hero-content{position:relative;z-index:1;padding:58px 7%;max-width:690px;color:white}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;color:#a8f2df;background:#ffffff13;border:1px solid #ffffff30;border-radius:30px;padding:8px 13px;font-size:12px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase}
+.hero h1{font-size:clamp(42px,6vw,68px);line-height:1.02;letter-spacing:-2.5px;margin:22px 0 16px}
+.hero h1 span{color:#65e1c3}
+.hero p{font-size:17px;line-height:1.75;color:#d9eeea;max-width:570px;margin:0 0 26px}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+.hero .btn-outline{background:#ffffff13;color:white;border-color:#ffffff65}
+.hero-note{display:flex;align-items:center;gap:22px;flex-wrap:wrap;margin-top:28px;color:#d5eeea;font-size:13px}
+.hero-note span{display:flex;align-items:center;gap:7px}
+.section{padding:48px 0}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:25px}
+.kicker{color:var(--teal);font-weight:850;text-transform:uppercase;font-size:12px;letter-spacing:1.5px}
+.section h2{font-size:clamp(28px,4vw,39px);letter-spacing:-1.2px;margin:8px 0 9px}
+.section-lead{color:var(--muted);line-height:1.7;margin:0;max-width:680px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.stat{background:white;border:1px solid var(--line);border-radius:19px;padding:23px;box-shadow:0 8px 25px #144d4410;position:relative;overflow:hidden}
+.stat:after{content:"";position:absolute;width:95px;height:95px;border-radius:50%;right:-35px;top:-42px;background:var(--mint)}
+.stat-top{display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1}
+.stat-icon{height:43px;width:43px;border-radius:14px;display:grid;place-items:center;background:#e6f7f1;font-size:20px}
+.stat:nth-child(2) .stat-icon{background:#fff3e3}.stat:nth-child(3) .stat-icon{background:#eaf3ff}.stat:nth-child(4) .stat-icon{background:#e6f7ee}
+.stat-label{color:#71868a;font-size:12px;font-weight:850;letter-spacing:.8px;text-transform:uppercase;margin:18px 0 5px}
+.stat-value{font-size:35px;font-weight:850;letter-spacing:-1px}
+.stat-foot{font-size:12px;color:#8a9b9e;margin-top:5px}
+.grid-2{display:grid;grid-template-columns:1.1fr .9fr;gap:22px}
+.panel{background:white;border:1px solid var(--line);border-radius:var(--radius);padding:27px;box-shadow:0 10px 30px #164d4410}
+.panel h3{font-size:20px;margin:0 0 8px;letter-spacing:-.4px}
+.panel-sub{color:var(--muted);font-size:14px;line-height:1.6;margin:0 0 20px}
+.steps{display:grid;grid-template-columns:repeat(2,1fr);gap:13px}
+.step{padding:17px;border:1px solid var(--line);border-radius:16px;background:#fbfefd}
+.step-icon{height:39px;width:39px;display:grid;place-items:center;border-radius:12px;background:var(--mint);font-size:19px;margin-bottom:12px}
+.step h4{margin:0 0 6px;font-size:15px}.step p{margin:0;color:var(--muted);font-size:13px;line-height:1.55}
+.activity-list{display:grid;gap:13px}
+.activity{display:flex;gap:12px;align-items:flex-start;padding-bottom:13px;border-bottom:1px solid #edf3f0}
+.activity:last-child{border:0;padding:0}
+.activity-icon{height:36px;width:36px;border-radius:12px;background:var(--mint);display:grid;place-items:center;flex:none}
+.activity strong{display:block;font-size:14px;margin:1px 0 4px}.activity small{color:var(--muted);font-size:12px}
+.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:17px}
+.feature{padding:24px;border-radius:19px;background:white;border:1px solid var(--line);box-shadow:0 8px 25px #144d4409}
+.feature .step-icon{height:48px;width:48px;font-size:22px}.feature h3{margin:15px 0 8px}.feature p{color:var(--muted);line-height:1.65;font-size:14px;margin:0}
+.complaint-layout{display:grid;grid-template-columns:.9fr 1.1fr;gap:22px;align-items:start}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 13px}
+.field{margin-bottom:14px}.field.full{grid-column:1/-1}
+label{display:block;font-size:13px;font-weight:750;margin:0 0 7px;color:#38565b}
+input,select,textarea{width:100%;padding:12px 13px;border:1px solid #d8e7e1;border-radius:11px;background:#fbfefd;color:var(--ink);outline:none}
+input:focus,select:focus,textarea:focus{border-color:#25a992;box-shadow:0 0 0 3px #25a99220}
+textarea{resize:vertical;min-height:105px}
+.form-submit{width:100%;margin-top:3px}
+.toolbar{display:flex;gap:10px;margin:15px 0}
+.toolbar input{flex:1;min-width:0}
+.toolbar select{max-width:155px}
+.records{display:grid;gap:12px;max-height:650px;overflow:auto;padding-right:3px}
+.record{border:1px solid var(--line);border-radius:15px;padding:16px;background:#fff}
+.record-top{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.record h4{margin:0;font-size:15px}.record p{font-size:13px;line-height:1.55;color:#647b7f;margin:7px 0}
+.pill{border-radius:30px;padding:5px 9px;font-size:11px;font-weight:850;background:#fff1d9;color:#98600c;white-space:nowrap}
+.pill.progress{background:#e5f1ff;color:#2766a4}.pill.resolved{background:#e4f7eb;color:#187448}
+.record-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.record-actions button{font-size:11px;padding:7px 10px}
+.empty{padding:28px;text-align:center;color:var(--muted);background:#f8fcfa;border-radius:13px}
+.cta{background:linear-gradient(120deg,#0b454b,#087e75);border-radius:25px;padding:38px 42px;color:white;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.cta h2{font-size:30px;margin:0 0 8px}.cta p{margin:0;color:#d3eeea;line-height:1.6}
+.cta .btn{background:white;color:#0b6966;white-space:nowrap}
+.faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+details{background:white;border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+summary{cursor:pointer;font-weight:750;font-size:14px}
+details p{color:var(--muted);font-size:13px;line-height:1.6;margin-bottom:0}
+footer{background:#0b343b;color:#d6e9e5;margin-top:55px;padding:40px 0 22px}
+.footer-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:30px}
+footer p,footer a{color:#a9c5c1;font-size:13px;line-height:1.7}
+footer h4{margin:0 0 12px;color:white}
+.footer-bottom{border-top:1px solid #ffffff20;margin-top:25px;padding-top:18px;color:#8eaeaa;font-size:12px;display:flex;justify-content:space-between;gap:15px}
+.modal-backdrop{position:fixed;inset:0;background:#062b30b8;backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:18px;z-index:50}
+.modal-backdrop.show{display:flex}
+.modal{width:min(460px,100%);background:white;border-radius:24px;padding:29px;box-shadow:0 30px 90px #001f2480;position:relative}
+.modal-close{position:absolute;right:18px;top:17px;border:0;background:#edf6f2;border-radius:10px;padding:7px 10px}
+.modal h2{margin:0 0 7px;font-size:27px}.modal>p{margin:0 0 20px;color:var(--muted);font-size:14px;line-height:1.6}
+.role-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:15px 0}
+.role-tabs button{border:1px solid var(--line);background:#f8fcfa;border-radius:10px;padding:10px;font-weight:750;color:#577075}
+.role-tabs button.active{background:#e3f6ef;border-color:#64c5aa;color:#08766d}
+.notice{display:none;border-radius:10px;padding:11px 12px;font-size:13px;margin-top:12px;background:#e7f8ed;color:#176a40}
+.notice.error{background:#fff0ed;color:#a33b2e}
+.user-chip{display:none;align-items:center;gap:8px;border:1px solid var(--line);border-radius:30px;padding:7px 11px;font-size:13px;font-weight:750}
+.user-avatar{width:27px;height:27px;border-radius:50%;display:grid;place-items:center;background:#dff5ed;color:#08766d}
+.mobile-nav{display:none}
+@media(max-width:900px){.navlinks{gap:11px;font-size:12px}.stats{grid-template-columns:repeat(2,1fr)}.grid-2,.complaint-layout{grid-template-columns:1fr}.hero-panel{min-height:390px}.feature-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:650px){.topbar{height:68px}.brand{font-size:20px}.navlinks{display:none}.menu-btn{display:block}.nav-actions .btn-outline{display:none}.hero{padding-top:18px}.hero-panel{min-height:440px}.hero-panel:before{background:linear-gradient(90deg,rgba(6,51,57,.96),rgba(6,62,64,.72)),url("assets/campus-hero.jpg") center/cover no-repeat}.hero-content{padding:35px 25px}.hero h1{font-size:46px}.hero p{font-size:15px}.section{padding:35px 0}.section-head{display:block}.stats{gap:10px}.stat{padding:17px}.stat-value{font-size:29px}.grid-2{gap:14px}.panel{padding:20px}.steps,.feature-grid,.faq-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.toolbar{flex-direction:column}.toolbar select{max-width:none}.cta{padding:27px;display:block}.cta .btn{margin-top:18px}.footer-grid{grid-template-columns:1fr}.footer-bottom{display:block}.mobile-nav.show{display:flex;position:absolute;top:68px;left:0;right:0;background:white;border-bottom:1px solid var(--line);padding:16px 5%;flex-direction:column;gap:14px;box-shadow:var(--shadow)}}
+
+/* Institutional information and student feedback sections */
+.info-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:22px}
+.info-highlight{background:linear-gradient(135deg,#e6f6f0,#f7fcfa);border:1px solid var(--line);border-radius:20px;padding:25px}
+.info-highlight h3{margin:0 0 10px;font-size:21px}
+.info-highlight p{color:var(--muted);line-height:1.75;margin:0}
+.service-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.service-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 8px 25px #144d4409}
+.service-card .step-icon{width:46px;height:46px;font-size:21px}
+.service-card h3{margin:13px 0 7px;font-size:16px}
+.service-card p{margin:0;color:var(--muted);font-size:13px;line-height:1.65}
+.review-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.review-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 8px 25px #144d4409}
+.review-stars{color:#d58a19;letter-spacing:2px;font-size:17px}
+.review-card blockquote{margin:12px 0 18px;color:#4f696e;line-height:1.7;font-size:14px}
+.review-person{display:flex;align-items:center;gap:10px}
+.review-avatar{height:38px;width:38px;border-radius:50%;display:grid;place-items:center;background:#e2f5ee;color:#08766d;font-weight:850}
+.review-person strong{display:block;font-size:13px}
+.review-person small{color:var(--muted);font-size:11px}
+.review-form{display:grid;grid-template-columns:1fr 1fr;gap:0 13px}
+.rating-select{display:flex;gap:8px;align-items:center}
+.rating-select button{border:1px solid var(--line);background:#f8fcfa;border-radius:9px;padding:8px 11px;color:#a9b5b3}
+.rating-select button.selected{background:#fff4dc;border-color:#e6bd68;color:#c17a0b}
+.official-note{border-left:4px solid var(--teal2);padding:12px 15px;background:#eff9f5;border-radius:0 12px 12px 0;color:#587176;font-size:12px;line-height:1.6}
+.notice-list{display:grid;gap:12px}
+.notice-item{display:flex;gap:13px;align-items:flex-start;padding:15px;border:1px solid var(--line);border-radius:14px;background:white}
+.notice-date{min-width:54px;text-align:center;border-radius:11px;background:#e6f7f1;padding:8px 5px;color:#08766d;font-size:11px;font-weight:850}
+.notice-item strong{font-size:14px}
+.notice-item p{margin:4px 0 0;color:var(--muted);font-size:12px;line-height:1.55}
+@media(max-width:900px){.info-grid{grid-template-columns:1fr}.service-grid,.review-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:650px){.service-grid,.review-grid,.review-form{grid-template-columns:1fr}}
+
+</style>
+</head>
+<body>
+<header class="topbar">
+ <div class="nav-wrap">
+  <a class="brand" href="#home"><span class="brand-mark">⌂</span>CampusCare</a>
+  <nav class="navlinks" aria-label="Main navigation">
+   <a href="#home">Home</a><a href="#about">About</a><a href="#services">Services</a><a href="#how">How it works</a><a href="#dashboard">Dashboard</a><a href="#reviews">Reviews</a><a href="#complaints">Complaints</a>
+  </nav>
+  <div class="nav-actions">
+   <span class="user-chip" id="userChip"><span class="user-avatar" id="userAvatar">S</span><span id="userName">Student</span></span>
+   <button class="btn btn-outline btn-sm" id="loginNav" onclick="openLogin()">Log in</button>
+   <button class="btn btn-primary btn-sm" id="registerNav" onclick="openLogin('register')">Get started <span>→</span></button>
+   <button class="menu-btn" id="menuBtn" aria-label="Open menu" onclick="toggleMobile()">☰</button>
+  </div>
+ </div>
+ <nav class="mobile-nav" id="mobileNav"><a href="#home" onclick="toggleMobile()">Home</a><a href="#about" onclick="toggleMobile()">About</a><a href="#services" onclick="toggleMobile()">Services</a><a href="#how" onclick="toggleMobile()">How it works</a><a href="#features" onclick="toggleMobile()">Features</a><a href="#dashboard" onclick="toggleMobile()">Dashboard</a><a href="#reviews" onclick="toggleMobile()">Reviews</a><a href="#complaints" onclick="toggleMobile()">Complaints</a></nav>
+</header>
+
+<main>
+<section class="hero wrap" id="home">
+ <div class="hero-panel">
+  <div class="hero-content">
+   <span class="eyebrow">🏫 A better campus starts here</span>
+   <h1>Care for your<br><span>campus.</span></h1>
+   <p>A smarter way to report maintenance issues, follow every update, and help create a cleaner, safer and better-maintained learning environment.</p>
+   <div class="hero-actions">
+    <a class="btn btn-primary" href="#complaints" onclick="goToComplaintForm(event)">＋ Report an issue</a>
+    <a class="btn btn-outline" href="#dashboard">▤ Explore dashboard</a>
+   </div>
+   <div class="hero-note"><span>✓ Easy complaint tracking</span><span>✓ Transparent status updates</span><span>✓ Campus-focused</span></div>
+  </div>
+ </div>
+</section>
+
+
+<section class="section wrap" id="about">
+ <div class="section-head"><div><div class="kicker">About the portal</div><h2>A more responsive campus, together</h2><p class="section-lead">CampusCare provides a clear, organised channel for reporting campus maintenance concerns and following their progress.</p></div></div>
+ <div class="info-grid">
+  <div class="info-highlight"><h3>Our purpose</h3><p>Make it easier for students to report maintenance issues, help campus teams understand what needs attention, and provide visibility into each request. From a leaking tap to a classroom facility issue, every report should be easy to record and track.</p></div>
+  <div class="panel"><h3>What CampusCare supports</h3><p class="panel-sub">A simple shared process built around accountability.</p>
+   <div class="activity-list">
+    <div class="activity"><span class="activity-icon">📝</span><div><strong>Structured reporting</strong><small>Capture the issue, location and priority.</small></div></div>
+    <div class="activity"><span class="activity-icon">🔎</span><div><strong>Visible progress</strong><small>Review the current status of recorded requests.</small></div></div>
+    <div class="activity"><span class="activity-icon">🤝</span><div><strong>Campus collaboration</strong><small>Help students and maintenance teams stay aligned.</small></div></div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<section class="section wrap" id="services">
+ <div class="section-head"><div><div class="kicker">Campus support</div><h2>Services and issue categories</h2><p class="section-lead">Use the portal to record common facility and infrastructure concerns in one organised place.</p></div></div>
+ <div class="service-grid">
+  <article class="service-card"><div class="step-icon">💡</div><h3>Electrical maintenance</h3><p>Lighting, switches, fans, power points and other electrical concerns.</p></article>
+  <article class="service-card"><div class="step-icon">🚰</div><h3>Water and plumbing</h3><p>Water supply, leakage, drinking-water points and plumbing issues.</p></article>
+  <article class="service-card"><div class="step-icon">🧹</div><h3>Cleanliness and hygiene</h3><p>Cleaning requests, waste disposal and washroom maintenance.</p></article>
+  <article class="service-card"><div class="step-icon">📶</div><h3>Network and Wi-Fi</h3><p>Connectivity problems affecting classrooms and campus spaces.</p></article>
+  <article class="service-card"><div class="step-icon">🪑</div><h3>Classroom and furniture</h3><p>Desks, chairs, boards, doors and classroom facility concerns.</p></article>
+  <article class="service-card"><div class="step-icon">🛡️</div><h3>Safety and facilities</h3><p>Report facility-related hazards or safety concerns for review.</p></article>
+ </div>
+</section>
+
+<section class="section wrap" id="updates">
+ <div class="section-head"><div><div class="kicker">Information desk</div><h2>Campus notices</h2><p class="section-lead">A dedicated space for important service information and maintenance announcements.</p></div></div>
+ <div class="panel">
+  <div class="notice-list">
+   <div class="notice-item"><div class="notice-date">INFO</div><div><strong>How to report an issue</strong><p>Include the exact campus location, select the closest category and describe the issue clearly when submitting a complaint.</p></div></div>
+   <div class="notice-item"><div class="notice-date">INFO</div><div><strong>When to use high priority</strong><p>Select high priority for urgent concerns that may affect safety or essential campus facilities.</p></div></div>
+   <div class="notice-item"><div class="notice-date">INFO</div><div><strong>Track your complaint</strong><p>Keep your complaint ID and revisit the Complaint Centre to check the latest status available in this demo.</p></div></div>
+  </div>
+  <p class="official-note" style="margin:16px 0 0">Demo content: these are guidance notices, not official announcements from a college administration. Replace this section with verified campus notices before presenting it as an institutional portal.</p>
+ </div>
+</section>
+
+<section class="section wrap" id="dashboard">
+ <div class="section-head"><div><div class="kicker">At a glance</div><h2>Campus dashboard</h2><p class="section-lead">A live overview of maintenance requests submitted through this browser.</p></div><a class="btn btn-outline btn-sm" href="#complaints">Manage complaints →</a></div>
+ <div class="stats">
+  <article class="stat"><div class="stat-top"><span class="stat-icon">▤</span><span>01</span></div><div class="stat-label">Total complaints</div><div class="stat-value" id="total">0</div><div class="stat-foot">All submitted requests</div></article>
+  <article class="stat"><div class="stat-top"><span class="stat-icon">◷</span><span>02</span></div><div class="stat-label">Pending</div><div class="stat-value" id="pending">0</div><div class="stat-foot">Awaiting attention</div></article>
+  <article class="stat"><div class="stat-top"><span class="stat-icon">⟳</span><span>03</span></div><div class="stat-label">In progress</div><div class="stat-value" id="progress">0</div><div class="stat-foot">Currently being handled</div></article>
+  <article class="stat"><div class="stat-top"><span class="stat-icon">✓</span><span>04</span></div><div class="stat-label">Resolved</div><div class="stat-value" id="resolved">0</div><div class="stat-foot">Issues marked complete</div></article>
+ </div>
+</section>
+
+<section class="section wrap" id="how">
+ <div class="section-head"><div><div class="kicker">Simple process</div><h2>How CampusCare works</h2><p class="section-lead">From reporting a problem to tracking its progress, everything is organised in one place.</p></div></div>
+ <div class="grid-2">
+  <div class="panel"><h3>Four simple steps</h3><p class="panel-sub">A clear process for students and campus maintenance teams.</p>
+   <div class="steps">
+    <div class="step"><div class="step-icon">📝</div><h4>1. Report</h4><p>Share the location, category, priority and details of the issue.</p></div>
+    <div class="step"><div class="step-icon">📬</div><h4>2. Register</h4><p>Your request appears in the complaint records with a unique ID.</p></div>
+    <div class="step"><div class="step-icon">🛠️</div><h4>3. Resolve</h4><p>Track the request as it moves from pending to in progress.</p></div>
+    <div class="step"><div class="step-icon">✅</div><h4>4. Close</h4><p>Mark the issue resolved once the maintenance work is complete.</p></div>
+   </div>
+  </div>
+  <div class="panel"><h3>Recent activity</h3><p class="panel-sub">The latest activity from your local complaint list.</p><div class="activity-list" id="activityList"><div class="empty">No activity yet. Submit your first campus complaint to get started.</div></div></div>
+ </div>
+</section>
+
+<section class="section wrap" id="features">
+ <div class="section-head"><div><div class="kicker">Built for campus life</div><h2>Everything in one place</h2><p class="section-lead">A simple maintenance portal designed to make campus issue reporting more organised and transparent.</p></div></div>
+ <div class="feature-grid">
+  <article class="feature"><div class="step-icon">📍</div><h3>Location-based reporting</h3><p>Record the building, room or campus area so an issue can be identified clearly.</p></article>
+  <article class="feature"><div class="step-icon">⚡</div><h3>Priority levels</h3><p>Choose low, medium or high priority to communicate the urgency of a request.</p></article>
+  <article class="feature"><div class="step-icon">🔎</div><h3>Search & filter</h3><p>Find complaints by ID, student, department, location, category or status.</p></article>
+  <article class="feature"><div class="step-icon">📊</div><h3>Status overview</h3><p>See pending, in-progress and resolved counts at a glance on the dashboard.</p></article>
+  <article class="feature"><div class="step-icon">🔔</div><h3>Clear feedback</h3><p>Get an on-screen confirmation when a complaint is submitted or updated.</p></article>
+  <article class="feature"><div class="step-icon">📱</div><h3>Responsive experience</h3><p>Use the portal on desktop, tablet or mobile with layouts that adapt to screen size.</p></article>
+ </div>
+</section>
+
+
+<section class="section wrap" id="reviews">
+ <div class="section-head"><div><div class="kicker">Community feedback</div><h2>Student reviews</h2><p class="section-lead">Feedback helps improve the reporting experience and make the portal easier to use.</p></div></div>
+ <div class="review-grid" id="reviewList">
+  <article class="review-card"><div class="review-stars">★★★★★</div><blockquote>“The reporting steps are clear, and it is easy to understand where to submit a campus issue.”</blockquote><div class="review-person"><span class="review-avatar">S</span><div><strong>Sample student feedback</strong><small>Illustrative demo review</small></div></div></article>
+  <article class="review-card"><div class="review-stars">★★★★☆</div><blockquote>“Having complaint categories and status tracking in one place makes the process easier to follow.”</blockquote><div class="review-person"><span class="review-avatar">S</span><div><strong>Sample student feedback</strong><small>Illustrative demo review</small></div></div></article>
+  <article class="review-card"><div class="review-stars">★★★★★</div><blockquote>“A useful concept for bringing campus facility concerns into one organised portal.”</blockquote><div class="review-person"><span class="review-avatar">S</span><div><strong>Sample student feedback</strong><small>Illustrative demo review</small></div></div></article>
+ </div>
+ <div class="grid-2" style="margin-top:22px">
+  <div class="panel"><h3>Share your feedback</h3><p class="panel-sub">Submit a review about your experience using CampusCare.</p>
+   <form id="reviewForm">
+    <div class="review-form">
+     <div class="field"><label for="reviewName">Your name *</label><input id="reviewName" maxlength="60" placeholder="Enter your name" required></div>
+     <div class="field"><label for="reviewRole">I am a *</label><select id="reviewRole"><option>Student</option><option>Faculty</option><option>Staff</option></select></div>
+     <div class="field full"><label>Rating *</label><div class="rating-select" id="ratingSelect" aria-label="Choose a rating"><button type="button" data-rating="1" aria-label="1 star">★</button><button type="button" data-rating="2" aria-label="2 stars">★</button><button type="button" data-rating="3" aria-label="3 stars">★</button><button type="button" data-rating="4" aria-label="4 stars">★</button><button type="button" data-rating="5" class="selected" aria-label="5 stars">★</button></div></div>
+     <div class="field full"><label for="reviewText">Your review *</label><textarea id="reviewText" maxlength="500" placeholder="Tell us what worked well or what could be improved..." required></textarea></div>
+    </div>
+    <button class="btn btn-primary" type="submit">Submit review →</button><div class="notice" id="reviewNotice" role="status"></div>
+   </form>
+  </div>
+  <div class="panel"><h3>Feedback principles</h3><p class="panel-sub">A respectful feedback space helps the portal improve.</p>
+   <div class="activity-list">
+    <div class="activity"><span class="activity-icon">💬</span><div><strong>Be constructive</strong><small>Share specific suggestions and useful details.</small></div></div>
+    <div class="activity"><span class="activity-icon">🔒</span><div><strong>Protect personal information</strong><small>Do not include passwords, private contact details or sensitive information in a review.</small></div></div>
+    <div class="activity"><span class="activity-icon">📌</span><div><strong>Local demo reviews</strong><small>Reviews submitted here are stored in this browser only.</small></div></div>
+   </div>
+   <p class="official-note" style="margin-top:16px">The pre-filled reviews above are illustrative placeholders, not verified statements from real students. Replace or remove them before an official launch.</p>
+  </div>
+ </div>
+</section>
+
+<section class="section wrap" id="complaints">
+ <div class="section-head"><div><div class="kicker">Take action</div><h2>Campus complaint centre</h2><p class="section-lead">Submit a new maintenance issue or review and update existing complaint records.</p></div></div>
+ <div class="complaint-layout">
+  <section class="panel">
+   <h3>📝 Register a complaint</h3><p class="panel-sub">Please provide accurate information so the issue can be identified.</p>
+   <form id="complaintForm">
+    <div class="form-grid">
+     <div class="field"><label for="name">Student name *</label><input id="name" maxlength="80" placeholder="Enter your name" required></div>
+     <div class="field"><label for="department">Department *</label><select id="department" required><option value="">Select department</option><option>CSE</option><option>Data Science</option><option>IT</option><option>ECE</option><option>Mechanical</option><option>Civil</option><option>Other</option></select></div>
+     <div class="field"><label for="room">Room / location *</label><input id="room" maxlength="100" placeholder="e.g. Block A, Room 204" required></div>
+     <div class="field"><label for="category">Problem category *</label><select id="category" required><option value="">Select category</option><option>Electricity</option><option>Water</option><option>Cleanliness</option><option>Wi-Fi</option><option>Classroom</option><option>Washroom</option><option>Furniture</option><option>Safety</option><option>Other</option></select></div>
+     <div class="field"><label for="priority">Priority</label><select id="priority"><option>Low</option><option selected>Medium</option><option>High</option></select></div>
+     <div class="field"><label for="contact">Contact (optional)</label><input id="contact" maxlength="80" placeholder="Email or phone"></div>
+     <div class="field full"><label for="description">Problem description *</label><textarea id="description" maxlength="1000" placeholder="Describe what happened and any useful details..." required></textarea></div>
+    </div>
+    <button class="btn btn-primary form-submit" type="submit">Submit complaint →</button>
+    <div class="notice" id="notice" role="status"></div>
+   </form>
+  </section>
+  <section class="panel">
+   <h3>📋 Complaint records</h3><p class="panel-sub">Search, filter and update the status of submitted requests.</p>
+   <div class="toolbar"><input id="search" placeholder="Search ID, name, room or category..." aria-label="Search complaints"><select id="filter" aria-label="Filter by status"><option value="All">All statuses</option><option>Pending</option><option>In Progress</option><option>Resolved</option></select></div>
+   <div class="records" id="complaintRecords"><div class="empty">No complaints yet. Register the first campus issue.</div></div>
+  </section>
+ </div>
+</section>
+
+<section class="section wrap">
+ <div class="cta"><div><h2>Make your campus better, one report at a time.</h2><p>Notice an issue? Share the details and help keep campus facilities in good condition.</p></div><a class="btn" href="#complaints" onclick="goToComplaintForm(event)">Report a complaint →</a></div>
+</section>
+
+<section class="section wrap" id="faq">
+ <div class="section-head"><div><div class="kicker">Need help?</div><h2>Frequently asked questions</h2><p class="section-lead">A few things to know about using the CampusCare demo.</p></div></div>
+ <div class="faq-grid">
+  <details><summary>How do I submit a complaint?</summary><p>Go to the Campus complaint centre, complete the required fields and select Submit complaint. A unique complaint ID will be generated.</p></details>
+  <details><summary>Can I check the complaint status?</summary><p>Yes. The complaint records section shows the current status. Use the search field or status filter to find a request.</p></details>
+  <details><summary>Can I use this on my phone?</summary><p>Yes. The layout adapts to smaller screens, including the navigation, forms and complaint cards.</p></details>
+  <details><summary>Are complaints shared with everyone?</summary><p>This version is a front-end demonstration. Records are saved in the current browser only and are not shared between devices or users.</p></details>
+ </div>
+</section>
+</main>
+
+<footer>
+ <div class="wrap">
+  <div class="footer-grid">
+   <div><a class="brand" href="#home" style="color:white"><span class="brand-mark">⌂</span>CampusCare</a><p>A campus maintenance management portal concept to make issue reporting and tracking simpler, clearer and more organised.</p></div>
+   <div><h4>Explore</h4><p><a href="#about">About CampusCare</a><br><a href="#services">Services</a><br><a href="#how">How it works</a><br><a href="#updates">Campus notices</a><br><a href="#reviews">Student reviews</a><br><a href="#dashboard">Dashboard</a></p></div>
+   <div><h4>Get started</h4><p><a href="#complaints">Register a complaint</a><br><a href="#faq">FAQs</a><br><a href="#" onclick="openLogin();return false">Login demo</a></p></div>
+  </div>
+  <div class="footer-bottom"><span>© <span id="year"></span> CampusCare · Student mini project</span><span>Designed for a cleaner, better-maintained campus.</span></div>
+ </div>
+</footer>
+
+<div class="modal-backdrop" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="loginTitle" onclick="if(event.target===this)closeLogin()">
+ <div class="modal">
+  <button class="modal-close" onclick="closeLogin()" aria-label="Close">✕</button>
+  <div class="brand" style="margin-bottom:20px"><span class="brand-mark">⌂</span>CampusCare</div>
+  <h2 id="loginTitle">Welcome back</h2><p>Sign in to personalise your CampusCare demo experience.</p>
+  <div class="role-tabs"><button type="button" class="active" id="studentTab" onclick="setRole('Student')">🎓 Student</button><button type="button" id="adminTab" onclick="setRole('Admin')">🛡️ Admin</button></div>
+  <form id="loginForm">
+   <div class="field"><label for="loginName">Your name</label><input id="loginName" placeholder="Enter your name" required></div>
+   <div class="field"><label for="loginEmail">Email address</label><input id="loginEmail" type="email" placeholder="you@college.edu" required></div>
+   <div class="field"><label for="loginPassword">Password</label><input id="loginPassword" type="password" minlength="4" placeholder="Enter any 4+ characters" required></div>
+   <button class="btn btn-primary form-submit" type="submit">Continue →</button>
+   <div class="notice" id="loginNotice"></div>
+  </form>
+  <p style="font-size:11px;margin:14px 0 0;color:#829497">Demo only: this sign-in is stored in this browser and does not provide real authentication or secure accounts.</p>
+ </div>
+</div>
+
+<script>
+"use strict";
+const STORAGE_KEY="campusCare_v1";
+let complaints=[];
+let selectedRole="Student";
+let currentUser=null;
+const $=id=>document.getElementById(id);
+function safeLoad(){
+ try{
+  const parsed=JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");
+  complaints=Array.isArray(parsed)?parsed.filter(c=>c&&Number.isSafeInteger(c.id)&&typeof c.name==="string"&&typeof c.room==="string"&&typeof c.category==="string"&&typeof c.description==="string"&&["Pending","In Progress","Resolved"].includes(c.status)):[];
+ }catch(e){complaints=[]}
+}
+function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(complaints));return true}catch(e){showNotice("Your browser could not save this data. Storage may be unavailable.",true);return false}}
+function showNotice(message,error=false){const el=$("notice");el.textContent=message;el.className="notice"+(error?" error":"");el.style.display="block"}
+function addText(parent,tag,value,className=""){const el=document.createElement(tag);el.textContent=value;if(className)el.className=className;parent.appendChild(el);return el}
+function updateDashboard(){
+ $("total").textContent=complaints.length;
+ $("pending").textContent=complaints.filter(c=>c.status==="Pending").length;
+ $("progress").textContent=complaints.filter(c=>c.status==="In Progress").length;
+ $("resolved").textContent=complaints.filter(c=>c.status==="Resolved").length;
+}
+function renderActivity(){
+ const target=$("activityList");target.replaceChildren();
+ const latest=[...complaints].sort((a,b)=>b.id-a.id).slice(0,4);
+ if(!latest.length){addText(target,"div","No activity yet. Submit your first campus complaint to get started.","empty");return}
+ latest.forEach(c=>{
+  const row=document.createElement("div");row.className="activity";
+  addText(row,"div",c.status==="Resolved"?"✓":c.status==="In Progress"?"⟳":"＋","activity-icon");
+  const body=document.createElement("div");addText(body,"strong",`Complaint #${c.id} · ${c.category}`);
+  addText(body,"small",`${c.room} · ${c.status} · ${c.createdAt||"Recently submitted"}`);
+  row.appendChild(body);target.appendChild(row);
+ });
+}
+function renderComplaints(){
+ updateDashboard();renderActivity();
+ const list=$("complaintRecords");list.replaceChildren();
+ const query=$("search").value.trim().toLowerCase(),status=$("filter").value;
+ const filtered=complaints.filter(c=>{
+  const matchStatus=status==="All"||c.status===status;
+  const haystack=[c.id,c.name,c.department,c.room,c.category,c.description].join(" ").toLowerCase();
+  return matchStatus&&haystack.includes(query);
+ }).sort((a,b)=>b.id-a.id);
+ if(!filtered.length){addText(list,"div",complaints.length?"No matching complaints found.":"No complaints yet. Register the first campus issue.","empty");return}
+ filtered.forEach(c=>{
+  const card=document.createElement("article");card.className="record";
+  const top=document.createElement("div");top.className="record-top";
+  addText(top,"h4",`Complaint #${c.id}`);
+  const badge=addText(top,"span",c.status,"pill");
+  if(c.status==="In Progress")badge.classList.add("progress");
+  if(c.status==="Resolved")badge.classList.add("resolved");
+  card.appendChild(top);
+  addText(card,"p",`${c.name} · ${c.department||"Department not specified"}`);
+  addText(card,"p",`📍 ${c.room} · ${c.category} · ${c.priority||"Medium"} priority`);
+  addText(card,"p",c.description);
+  if(c.contact)addText(card,"p",`Contact: ${c.contact}`);
+  addText(card,"p",`Submitted: ${c.createdAt||"—"}`);
+  const actions=document.createElement("div");actions.className="record-actions";
+  if(c.status!=="Resolved"){
+   const update=document.createElement("button");update.className="btn btn-primary btn-sm";
+   update.textContent=c.status==="Pending"?"Mark in progress":"Mark resolved";
+   update.addEventListener("click",()=>{
+    const previous=c.status;c.status=previous==="Pending"?"In Progress":"Resolved";
+    if(save()){renderComplaints();}else c.status=previous;
+   });actions.appendChild(update);
+  }
+  const del=document.createElement("button");del.className="btn btn-outline btn-sm";del.textContent="Delete";
+  del.addEventListener("click",()=>{
+   if(!confirm(`Delete complaint #${c.id}?`))return;
+   const old=complaints;complaints=complaints.filter(x=>x.id!==c.id);
+   if(save())renderComplaints();else complaints=old;
+  });
+  actions.appendChild(del);card.appendChild(actions);list.appendChild(card);
+ });
+}
+$("complaintForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ const name=$("name").value.trim(),department=$("department").value,room=$("room").value.trim(),category=$("category").value,priority=$("priority").value,description=$("description").value.trim(),contact=$("contact").value.trim();
+ if(!name||!department||!room||!category||!description){showNotice("Please complete all required fields.",true);return}
+ const complaint={id:Date.now(),name,department,room,category,priority,description,contact,status:"Pending",createdAt:new Date().toLocaleString()};
+ complaints.push(complaint);
+ if(save()){
+  e.target.reset();$("priority").value="Medium";$("filter").value="All";$("search").value="";
+  showNotice(`Complaint submitted successfully! Your ID is ${complaint.id}.`);
+  renderComplaints();
+ }else complaints=complaints.filter(c=>c.id!==complaint.id);
+});
+
+const REVIEW_KEY="campusCare_reviews_v1";
+let selectedRating=5;
+function renderReviews(){
+ const target=$("reviewList");
+ let saved=[];
+ try{saved=JSON.parse(localStorage.getItem(REVIEW_KEY)||"[]");if(!Array.isArray(saved))saved=[]}catch(e){saved=[]}
+ saved.slice().reverse().forEach(review=>{
+  const card=document.createElement("article");card.className="review-card";
+  addText(card,"div","★".repeat(review.rating)+"☆".repeat(5-review.rating),"review-stars");
+  const quote=document.createElement("blockquote");quote.textContent="“"+review.text+"”";card.appendChild(quote);
+  const person=document.createElement("div");person.className="review-person";
+  addText(person,"span",(review.name||"U").charAt(0).toUpperCase(),"review-avatar");
+  const meta=document.createElement("div");addText(meta,"strong",review.name||"Campus user");addText(meta,"small",(review.role||"Student")+" · Submitted review");
+  person.appendChild(meta);card.appendChild(person);target.appendChild(card);
+ });
+}
+$("ratingSelect").addEventListener("click",e=>{
+ const button=e.target.closest("button[data-rating]");if(!button)return;
+ selectedRating=Number(button.dataset.rating);
+ $("ratingSelect").querySelectorAll("button").forEach(b=>b.classList.toggle("selected",Number(b.dataset.rating)<=selectedRating));
+});
+$("reviewForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ const name=$("reviewName").value.trim(),text=$("reviewText").value.trim(),role=$("reviewRole").value;
+ if(!name||!text){$("reviewNotice").textContent="Please complete the required fields."; $("reviewNotice").className="notice error";$("reviewNotice").style.display="block";return}
+ let saved=[];
+ try{saved=JSON.parse(localStorage.getItem(REVIEW_KEY)||"[]");if(!Array.isArray(saved))saved=[]}catch(err){saved=[]}
+ saved.push({name,text,role,rating:selectedRating,createdAt:new Date().toISOString()});
+ try{localStorage.setItem(REVIEW_KEY,JSON.stringify(saved));e.target.reset();selectedRating=5;$("ratingSelect").querySelectorAll("button").forEach(b=>b.classList.toggle("selected",Number(b.dataset.rating)<=5));$("reviewNotice").textContent="Thank you! Your review has been added on this browser."; $("reviewNotice").className="notice";$("reviewNotice").style.display="block";renderReviews()}
+ catch(err){$("reviewNotice").textContent="Your browser could not save this review."; $("reviewNotice").className="notice error";$("reviewNotice").style.display="block"}
+});
+
+$("search").addEventListener("input",renderComplaints);
+$("filter").addEventListener("change",renderComplaints);
+
+function openLogin(mode="login"){
+ $("loginModal").classList.add("show");$("loginTitle").textContent=mode==="register"?"Create your demo profile":"Welcome back";
+ $("loginName").focus();
+}
+function closeLogin(){$("loginModal").classList.remove("show")}
+function setRole(role){
+ selectedRole=role;
+ $("studentTab").classList.toggle("active",role==="Student");
+ $("adminTab").classList.toggle("active",role==="Admin");
+}
+$("loginForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ const name=$("loginName").value.trim(),email=$("loginEmail").value.trim(),password=$("loginPassword").value;
+ if(!name||!email||password.length<4)return;
+ currentUser={name,email,role:selectedRole};
+ try{localStorage.setItem("campusCare_demo_user",JSON.stringify(currentUser))}catch(e){}
+ $("userName").textContent=name;
+ if($("name") && !$("name").value) $("name").value=name;
+ $("userAvatar").textContent=name.charAt(0).toUpperCase();
+ $("userChip").style.display="inline-flex";$("loginNav").style.display="none";$("registerNav").textContent="Log out";
+ $("registerNav").onclick=logout;
+ $("loginNotice").textContent=`Signed in as ${selectedRole}. This is a local demo session.`;
+ $("loginNotice").className="notice";$("loginNotice").style.display="block";
+ setTimeout(closeLogin,700);
+});
+function logout(){
+ currentUser=null;
+ try{localStorage.removeItem("campusCare_demo_user")}catch(e){}
+ $("userChip").style.display="none";$("loginNav").style.display="inline-flex";
+ $("registerNav").textContent="Get started";$("registerNav").onclick=()=>openLogin("register");
+}
+function goToComplaintForm(event){
+ if(event) event.preventDefault();
+ const section=$("complaints");
+ if(!section) return;
+ section.scrollIntoView({behavior:"smooth",block:"start"});
+ setTimeout(()=>{
+  const nameField=$("name");
+  if(currentUser && nameField && !nameField.value) nameField.value=currentUser.name;
+  if(nameField) nameField.focus({preventScroll:true});
+ },450);
+}
+function toggleMobile(){$("mobileNav").classList.toggle("show")}
+try{
+ const user=JSON.parse(localStorage.getItem("campusCare_demo_user")||"null");
+ if(user&&user.name){currentUser=user;if($("name") && !$("name").value) $("name").value=user.name;$("userName").textContent=user.name;$("userAvatar").textContent=user.name.charAt(0).toUpperCase();$("userChip").style.display="inline-flex";$("loginNav").style.display="none";$("registerNav").textContent="Log out";$("registerNav").onclick=logout}
+}catch(e){}
+$("year").textContent=new Date().getFullYear();
+safeLoad();renderComplaints();renderReviews();
+</script>
+</body>
+</html>
